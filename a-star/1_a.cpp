@@ -15,7 +15,13 @@ using std::abs;
 enum class State {kEmpty, kObstacle};
 
 
-// Alll funtion prototypes
+// All funtion prototypes
+std::vector<State> ParseLine(std::string); 
+std::vector<std::vector<State>> ReadBoardFile(std::string);
+std::string CellString(State);
+void PrintBoard(const std::vector<std::vector<State>>);
+int Heuristic(int, int, int, int);
+std::vector<std::vector<State>> Search (std::vector<std::vector<State>>, int[2], int[2]);
 
 /**
  * @brief funtion to parse lines from input gridworld
@@ -35,6 +41,7 @@ std::vector<State> ParseLine(std::string line) {
     }
     return row;
 }
+
 
 /**
  * @brief Function to construct gridworld from file
@@ -56,14 +63,12 @@ std::vector<std::vector<State>> ReadBoardFile(std::string path) {
 }
 
 
-// TODO: Write the Search function stub here.
-
-std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, int init[2], int goal[2]) {
-    cout<<"No path found" << '\n';
-    return std::vector<std::vector<State>> {};
-}
-
-
+/**
+ * @brief Returns image objects for values in the gridworld
+ * 
+ * @param cell Cell of the gridworld
+ * @return std::string 
+ */
 std::string CellString(State cell){
     switch (cell)
     {
@@ -97,6 +102,21 @@ int Heuristic(int x1, int y1, int x2, int y2) {
     return std::abs(x2-x1) + std::abs(y2-y1);
 }
 
+/**
+ * @brief Implements A* Search Algorithm
+ * 
+ * @param grid 
+ * @param init 
+ * @param goal 
+ * @return std::vector<std::vector<State>> 
+ */
+std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, int init[2], int goal[2]) {
+    cout<<"No path found" << '\n';
+    return std::vector<std::vector<State>> {};
+}
+
+
+
 int main(int argc, char *argv[]) {
     // TODO: Declare "init" and "goal" arrays with values {0, 0} and {4, 5} respectively.
     int init[2] {0, 0};
@@ -113,3 +133,4 @@ int main(int argc, char *argv[]) {
     PrintBoard(solution);
     return 0;
 }
+ 
