@@ -12,7 +12,7 @@ using std::vector;
 using std::abs;
 
 // Declare an enumerated object that contains possible states in the gridworld
-enum class State {kEmpty, kObstacle};
+enum class State {kEmpty, kObstacle, kClosed};
 
 
 // All funtion prototypes
@@ -105,9 +105,9 @@ int Heuristic(int x1, int y1, int x2, int y2) {
 /**
  * @brief Implements A* Search Algorithm
  * 
- * @param grid 
- * @param init 
- * @param goal 
+ * @param grid Gridworld matrix
+ * @param init Coordinates of starting point 
+ * @param goal Coordinates of end point
  * @return std::vector<std::vector<State>> 
  */
 std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, int init[2], int goal[2]) {
@@ -115,6 +115,24 @@ std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, in
     return std::vector<std::vector<State>> {};
 }
 
+
+/**
+ * @brief Adds open node top open list and marks rid cells as closed
+ * 
+ * @param x 
+ * @param y 
+ * @param g 
+ * @param h 
+ * @param openNodes Vector of open nodes
+ * @param grid Gridworld matrix
+ */
+void AddToOpen(int x, int y, int g, int h, std::vector<std::vector<int>>& openNodes, std::vector<std::vector<State>>& grid) {
+    
+    // Create a vector node in the form (x,y,g,h) and push vector node to open list
+    openNodes.push_back(std::vector<int> {x, y, g, h});
+    // Set grid value for (x,y) as blocked
+    grid[x][y] = State::kClosed;
+}
 
 
 int main(int argc, char *argv[]) {
