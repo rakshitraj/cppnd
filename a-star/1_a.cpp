@@ -17,10 +17,11 @@ enum class State {kEmpty, kObstacle, kClosed};
 
 // All funtion prototypes
 std::vector<State> ParseLine(std::string); 
-std::vector<std::vector<State>> ReadBoardFile(std::string);
-std::string CellString(State);
-void PrintBoard(const std::vector<std::vector<State>>);
-int Heuristic(int, int, int, int);
+std::vector<std::vector<State>> ReadBoardFile (std::string);
+std::string CellString (State);
+void PrintBoard (const std::vector<std::vector<State>>);
+int Heuristic (int, int, int, int);
+void AddToOpen (int, int, int, int, std::vector<std::vector<int>>&, std::vector<std::vector<State>>&);
 std::vector<std::vector<State>> Search (std::vector<std::vector<State>>, int[2], int[2]);
 
 /**
@@ -102,18 +103,6 @@ int Heuristic(int x1, int y1, int x2, int y2) {
     return std::abs(x2-x1) + std::abs(y2-y1);
 }
 
-/**
- * @brief Implements A* Search Algorithm
- * 
- * @param grid Gridworld matrix
- * @param init Coordinates of starting point 
- * @param goal Coordinates of end point
- * @return std::vector<std::vector<State>> 
- */
-std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, int init[2], int goal[2]) {
-    cout<<"No path found" << '\n';
-    return std::vector<std::vector<State>> {};
-}
 
 
 /**
@@ -132,6 +121,34 @@ void AddToOpen(int x, int y, int g, int h, std::vector<std::vector<int>>& openNo
     openNodes.push_back(std::vector<int> {x, y, g, h});
     // Set grid value for (x,y) as blocked
     grid[x][y] = State::kClosed;
+}
+
+bool Compare (std::vector<int> node1, std::vector<int> node2) {
+    if ((node1[2]+node1[3]) > (node2[2]+node2[3])) return true;
+    return false;
+}
+
+/**
+ * @brief Implements A* Search Algorithm
+ * 
+ * @param grid Gridworld matrix
+ * @param init Coordinates of starting point 
+ * @param goal Coordinates of end point
+ * @return std::vector<std::vector<State>> 
+ */
+std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, int init[2], int goal[2]) {
+    
+    // Create the vector of open nodes.
+    vector<vector<int>> open {};
+  
+    // TODO: Initialize the starting node. 
+    open.push_back(std::vector<int> {init[0], init[1], 0, Heuristic(init[0], init[1], goal[0], goal[1])});
+  
+    // TODO: Use AddToOpen to add the starting node to the open vector.
+    AddToOpen(init[0], init[1], 0, Heuristic(init[0], init[1], goal[0], goal[1]), open, grid);
+
+    cout<<"No path found" << '\n';
+    return std::vector<std::vector<State>> {};
 }
 
 
