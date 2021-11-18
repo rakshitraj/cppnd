@@ -15,6 +15,9 @@ using std::abs;
 // Declare an enumerated object that contains possible states in the gridworld
 enum class State {kPath, kEmpty, kObstacle, kClosed};
 
+// Directional deltas
+const int delta[4][2] = {{-1,0}, {0,-1}, {1, 0}, {0, 1}};
+
 
 // All funtion prototypes
 std::vector<State> ParseLine(std::string); 
@@ -23,7 +26,9 @@ std::string CellString (State);
 void PrintBoard (const std::vector<std::vector<State>>);
 int Heuristic (int, int, int, int);
 void AddToOpen (int, int, int, int, std::vector<std::vector<int>>&, std::vector<std::vector<State>>&);
-void CellSort(vector<vector<int>> *);
+void CellSort (vector<vector<int>> *);
+bool CheckValidCell (int, int, const vector<vector<State>> &); 
+void ExpandNighbors (vector<int>&, vector<vector<int>>&, vector<vector<State>>&, int[2]);
 std::vector<std::vector<State>> Search (std::vector<std::vector<State>>, int[2], int[2]);
 
 /**
@@ -81,6 +86,11 @@ string CellString(State cell) {
 }
 
 
+/**
+ * @brief Prints the Gridworld
+ * 
+ * @param board 
+ */
 void PrintBoard(const std::vector<std::vector<State>> board) {
     for (int i=0; i<board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
@@ -111,8 +121,8 @@ int Heuristic(int x1, int y1, int x2, int y2) {
  * 
  * @param x 
  * @param y 
- * @param g 
- * @param h 
+ * @param g g-value of cell
+ * @param h heuristic value of cell 
  * @param openNodes Vector of open nodes
  * @param grid Gridworld matrix
  */
@@ -124,13 +134,76 @@ void AddToOpen(int x, int y, int g, int h, std::vector<std::vector<int>>& openNo
     grid[x][y] = State::kClosed;
 }
 
+
+/**
+ * @brief Compares two cells and returns true if the first cell has greater sum of g-value and heuristic-value
+ * 
+ * @param node1 
+ * @param node2 
+ * @return true 
+ * @return false 
+ */
 bool Compare (std::vector<int> node1, std::vector<int> node2) {
     if ((node1[2]+node1[3]) > (node2[2]+node2[3])) return true;
     return false;
 }
 
+
+/**
+ * @brief sorts cells in DESC order of f-value 'f = g + h'. Closer to end, more the viability
+ * 
+ * @param v Open List vector
+ */
 void CellSort(vector<vector<int>> *v) {
     sort(v->begin(), v->end(), Compare);
+}
+
+
+/**
+ * @brief Checks if a Cell is valid, i.e. navigable
+ * 
+ * @param x 
+ * @param y 
+ * @param grid 
+ * @return true 
+ * @return false 
+ */
+bool CheckValidCell(int x, int y, const vector<vector<State>> &grid) {
+    if (x < grid.size() && y < grid[0].size() && grid[x][y] == State::kEmpty)
+            return true;
+    return false;
+}
+
+
+/**
+ * @brief Expands A* Search into proximial cells or, neighboring cells
+ * 
+ * @param current 
+ * @param goal 
+ * @param openNodes 
+ * @param grid 
+ */
+void ExpandNeighbors (vector<int>& current, int goal[2], vector<vector<int>>& openNodes, vector<vector<State>>& grid) {
+    // Get current node's data
+    int x = current[0];
+    int y = current[1];
+    int g = current[2];
+
+    //Loop through current cells's potential neighbors
+    for (int i=0; i<4; i++) {
+        int x2 = x + delta[i][0];
+        int y2 = y + delta[i][1];
+
+        //check that th potemtial neighbour's coordinates are on the grod and not closed, i.e. cell is valid
+        if (CheckValidCell(x2,y2, grid)) {
+            // Increment g value and add neighbor to open list 
+            int g2 = g+1;
+            int h2 = Heuristic(x2, y2, goal[0], goal[1]);
+
+            // Add nighbour node to open List
+            AddToOpen(x2, y2, g2, h2, openNodes, grid);
+        }
+    }
 }
 
 /**
