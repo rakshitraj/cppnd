@@ -14,6 +14,9 @@ using std::abs;
 // Declare an enumerated object that contains possible states in the gridworld
 enum class State {kEmpty, kObstacle};
 
+
+// Alll funtion prototypes
+
 /**
  * @brief funtion to parse lines from input gridworld
  * 
@@ -78,6 +81,20 @@ void PrintBoard(const std::vector<std::vector<State>> board) {
         }
         cout << '\n';
     }
+}
+
+
+/**
+ * @brief Heuristic Funtion for A* Search
+ * 
+ * @param x1 x-coordinate of point P1
+ * @param y1 y-coordinate of point P1
+ * @param x2 x-coordinate of point P2
+ * @param y2 y-coordinate of point P2
+ * @return int  Manhattan distance from point P2 to P1
+ */
+int Heuristic(int x1, int y1, int x2, int y2) {
+    return std::abs(x2-x1) + std::abs(y2-y1);
 }
 
 int main(int argc, char *argv[]) {
