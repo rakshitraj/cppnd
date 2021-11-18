@@ -13,7 +13,7 @@ using std::vector;
 using std::abs;
 
 // Declare an enumerated object that contains possible states in the gridworld
-enum class State {kPath, kEmpty, kObstacle, kClosed};
+enum class State {kStart, kFinish, kPath, kEmpty, kObstacle, kClosed};
 
 // Directional deltas
 const int delta[4][2] = {{-1,0}, {0,-1}, {1, 0}, {0, 1}};
@@ -79,9 +79,11 @@ std::vector<std::vector<State>> ReadBoardFile(std::string path) {
  */
 string CellString(State cell) {
   switch(cell) {
-    case State::kObstacle: return "⛰️   ";
+    case State::kObstacle: return "⛰️    ";
     case State::kPath: return "🚗   ";
-    default: return "0   "; 
+    case State::kStart: return "🚦   ";
+    case State::kFinish: return "🏁   ";
+    default: return "0    "; 
   }
 }
 
@@ -98,6 +100,7 @@ void PrintBoard(const std::vector<std::vector<State>> board) {
         }
         cout << '\n';
     }
+    cout << '\n';
 }
 
 
@@ -223,21 +226,35 @@ std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, in
     int y = init[1];
     int g = 0;
     int h = Heuristic(x, y, goal[0],goal[1]);
+
     // Use AddToOpen to add the starting node to the open vector.
     AddToOpen(x, y, g, h, open, grid);
+
     // while open vector is non empty
     while(open.size() > 0) {
+
         // Sort open list using CellSort, and get the current node
         CellSort(&open);
         auto current = open.back();
         open.pop_back();
+
         // Get the x and y values from the current node
         x = current[0];
         y = current[1];
         grid[x][y] = State::kPath;
+
         // Check if agent has reached the goal. If so, return grid
-        if (x == goal[0] && y== goal[1])
+        if (x == goal[0] && y== goal[1]) {
+            grid[init[0]][init[1]] = State::kStart;
+            grid[goal[0]][goal[1]] = State::kFinish;
             return grid;
+        }
+
+        // If we have year reache the goal, we expand search into neighboring cels
+        ExpandNeighbors(current, goal, open, grid);
+
+        // Show each step of A* Search
+        // PrintBoard(grid);
     }
     // We've run out of new nodes to explore and haven't found a path.
     cout<<"No path found" << '\n';
@@ -246,7 +263,7 @@ std::vector<std::vector<State>> Search (std::vector<std::vector<State>> grid, in
 
 
 int main(int argc, char *argv[]) {
-    // TODO: Declare "init" and "goal" arrays with values {0, 0} and {4, 5} respectively.
+    // Declare "init" and "goal" arrays with values {0, 0} and {4, 5} respectively.
     int init[2] {0, 0};
     int goal[2] {4, 5};
     
@@ -255,9 +272,9 @@ int main(int argc, char *argv[]) {
     else path = "1.board";
     std::vector<std::vector<State>> board = ReadBoardFile(path);
     PrintBoard(board);
-    // TODO: Call Search with "board", "init", and "goal". Store the results in the variable "solution".
+    // Call Search with "board", "init", and "goal". Store the results in the variable "solution".
     auto solution = Search(board, init, goal);
-    // TODO: Change the following line to pass "solution" to PrintBoard.
+    // Change the following line to pass "solution" to PrintBoard.
     PrintBoard(solution);
     return 0;
 }
