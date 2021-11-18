@@ -85,12 +85,14 @@ int main(int argc, char *argv[]) {
     int init[2] {0, 0};
     int goal[2] {4, 5};
     
-    std::string path = argv[1];
+    std::string path = "";
+    if (argv[1]) path = argv[1];
+    else path = "1.board";
     std::vector<std::vector<State>> board = ReadBoardFile(path);
     PrintBoard(board);
     // TODO: Call Search with "board", "init", and "goal". Store the results in the variable "solution".
-    // TODO: Change the following line to pass "solution" to PrintBoard.
     auto solution = Search(board, init, goal);
+    // TODO: Change the following line to pass "solution" to PrintBoard.
     PrintBoard(solution);
     return 0;
 }
