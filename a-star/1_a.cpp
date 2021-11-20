@@ -278,4 +278,3 @@ int main(int argc, char *argv[]) {
     PrintBoard(solution);
     return 0;
 }
- 
