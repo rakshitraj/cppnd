@@ -1,4 +1,15 @@
 # Executables
 *.out
 *.exe
-*.swp map.osm !map.osm *.o draw.cpp test.cpp build/ bin/ lib/ .github/workflows
+
+# For Project 1
+*.swp
+map.osm 
+!map.osm 
+*.o 
+draw.cpp 
+test.cpp 
+build/ 
+bin/ 
+lib/ 
+.github/workflows
