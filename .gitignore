@@ -14,4 +14,4 @@ bin/
 lib/ 
 .github/workflows
 # ignore Project 1 boilerplate repository
-~/cppnd/1_project/CppND-Route-Planning-Project/
+/1_project/CppND-Route-Planning-Project
